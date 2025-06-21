@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NAMSO F6</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         * {
             margin: 0;
@@ -13,181 +14,161 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 15px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body.light-theme {
+            background: #ffffff;
+            color: #333333;
+        }
+
+        body.dark-theme {
             background: #000000;
             color: #e0e0e0;
-            min-height: 100vh;
-            padding: 20px;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: #1a1a1a;
-            border-radius: 12px;
+            border-radius: 15px;
             padding: 25px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .light-theme .container {
+            background: #ffffff;
+            box-shadow: 8px 8px 16px #d9d9d9, -8px -8px 16px #ffffff;
+        }
+
+        .dark-theme .container {
+            background: #000000;
+            box-shadow: 8px 8px 16px #1c1c1c, -8px -8px 16px #0a0a0a;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
         }
 
         .title {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .light-theme .title {
+            color: #0054b4;
+        }
+
+        .dark-theme .title {
             color: #4a9eff;
-            margin-bottom: 5px;
         }
 
         .subtitle {
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .light-theme .subtitle {
+            color: #666666;
+        }
+
+        .dark-theme .subtitle {
             color: #b0b0b0;
-            font-size: 0.9rem;
+        }
+
+        .theme-toggle {
+            position: relative;
+        }
+
+        #themeSwitch {
+            display: none;
+        }
+
+        .theme-label {
+            display: flex;
+            align-items: center;
+            width: 60px;
+            height: 30px;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .light-theme .theme-label {
+            background: #ffffff;
+            box-shadow: inset 3px 3px 6px #d9d9d9, inset -3px -3px 6px #ffffff;
+        }
+
+        .dark-theme .theme-label {
+            background: #000000;
+            box-shadow: inset 3px 3px 6px #1c1c1c, inset -3px -3px 6px #0a0a0a;
+        }
+
+        .theme-label .slider {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            left: 2px;
+            transition: transform 0.3s ease, background 0.3s ease;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-theme .theme-label .slider {
+            background: #4a9eff;
+        }
+
+        #themeSwitch:checked + .theme-label .slider {
+            transform: translateX(30px);
+        }
+
+        .theme-label .fa-sun {
+            position: absolute;
+            left: 8px;
+            color: #f1c40f;
+            font-size: 1rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-label .fa-moon {
+            position: absolute;
+            right: 8px;
+            color: #7f8c8d;
+            font-size: 1rem;
+            transition: opacity 0.3s ease;
+        }
+
+        #themeSwitch:checked + .theme-label .fa-sun {
+            opacity: 0;
+        }
+
+        #themeSwitch:checked + .theme-label .fa-moon {
+            opacity: 1;
         }
 
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 20px;
-        }
-
-        .left-column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .right-column {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .detected-info {
-            background: rgba(74, 158, 255, 0.1);
-            border: 1px solid rgba(74, 158, 255, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            display: none;
-        }
-
-        .detected-title {
-            color: #4a9eff;
-            font-weight: 600;
+            gap: 25px;
             margin-bottom: 15px;
-            font-size: 0.9rem;
         }
 
-        .detected-content {
-            display: grid;
+        .left-column, .right-column {
+            display: flex;
+            flex-direction: column;
             gap: 15px;
-        }
-
-        .detected-pattern {
-            background: #0f0f0f;
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-
-        .pattern-label {
-            color: #b0b0b0;
-            font-size: 0.75rem;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .pattern-value {
-            color: #e0e0e0;
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            background: #1a1a1a;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #404040;
-            width: 100%;
-            resize: none;
-            transition: all 0.3s ease;
-        }
-
-        .pattern-value:focus {
-            outline: none;
-            border-color: #4a9eff;
-            box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
-        }
-
-        .detected-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-        }
-
-        .detected-item {
-            background: #0f0f0f;
-            padding: 10px;
-            border-radius: 6px;
-        }
-
-        .detected-label {
-            color: #b0b0b0;
-            font-size: 0.7rem;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .detected-input {
-            width: 100%;
-            background: #1a1a1a;
-            border: 1px solid #404040;
-            color: #e0e0e0;
-            padding: 6px 8px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .detected-input:focus {
-            outline: none;
-            border-color: #4a9eff;
-            box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
-        }
-
-        .x-count-control {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .x-count-btn {
-            background: #404040;
-            border: none;
-            color: #e0e0e0;
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .x-count-btn:hover {
-            background: #4a9eff;
-        }
-
-        .x-count-input {
-            width: 40px;
-            text-align: center;
-            background: #1a1a1a;
-            border: 1px solid #404040;
-            color: #e0e0e0;
-            padding: 4px;
-            border-radius: 4px;
-            font-size: 0.8rem;
         }
 
         .input-section {
@@ -197,44 +178,181 @@
         .input-label {
             display: block;
             margin-bottom: 8px;
-            color: #4a9eff;
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .light-theme .input-label {
+            color: #0054b4;
+        }
+
+        .dark-theme .input-label {
+            color: #4a9eff;
         }
 
         .input-main {
             width: 100%;
             padding: 12px;
-            border: 1px solid #404040;
+            border: none;
             border-radius: 8px;
-            background: #0f0f0f;
-            color: #e0e0e0;
-            font-size: 0.9rem;
             font-family: 'Courier New', monospace;
-            transition: all 0.3s ease;
-            resize: none;
-            min-height: 120px;
+            font-size: 1rem;
+            transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        .light-theme .input-main {
+            background: #ffffff;
+            box-shadow: inset 4px 4px 8px #d9d9d9, inset -4px -4px 8px #ffffff;
+            color: #333333;
+        }
+
+        .dark-theme .input-main {
+            background: #000000;
+            box-shadow: inset 4px 4px 8px #1c1c1c, inset -4px -4px 8px #0a0a0a;
+            color: #e0e0e0;
         }
 
         .input-main:focus {
             outline: none;
-            border-color: #4a9eff;
-            box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
+            box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.3);
         }
 
         .input-main::placeholder {
+            transition: color 0.3s ease;
+        }
+
+        .light-theme .input-main::placeholder {
+            color: #999999;
+        }
+
+        .dark-theme .input-main::placeholder {
             color: #808080;
         }
 
+        .detected-info {
+            border-radius: 10px;
+            padding: 15px;
+            display: none;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .light-theme .detected-info {
+            background: #ffffff;
+            box-shadow: inset 4px 4px 8px #d9d9d9, inset -4px -4px 8px #ffffff;
+        }
+
+        .dark-theme .detected-info {
+            background: #000000;
+            box-shadow: inset 4px 4px 8px #1c1c1c, inset -4px -4px 8px #0a0a0a;
+        }
+
+        .detected-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            transition: color 0.3s ease;
+        }
+
+        .light-theme .detected-title {
+            color: #0054b4;
+        }
+
+        .dark-theme .detected-title {
+            color: #4a9eff;
+        }
+
+        .detected-content {
+            display: grid;
+            gap: 12px;
+        }
+
+        .detected-pattern {
+            border-radius: 8px;
+            padding: 8px;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .light-theme .detected-pattern {
+            background: #ffffff;
+            box-shadow: 4px 4px 8px #d9d9d9, -4px -4px 8px #ffffff;
+        }
+
+        .dark-theme .detected-pattern {
+            background: #000000;
+            box-shadow: 4px 4px 8px #1c1c1c, -4px -4px 8px #0a0a0a;
+        }
+
+        .pattern-label, .detected-label {
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+
+        .light-theme .pattern-label,
+        .light-theme .detected-label {
+            color: #666666;
+        }
+
+        .dark-theme .pattern-label,
+        .dark-theme .detected-label {
+            color: #b0b0b0;
+        }
+
+        .pattern-value, .detected-input, .detected-select {
+            width: 100%;
+            border: none;
+            border-radius: 6px;
+            padding: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        .light-theme .pattern-value,
+        .light-theme .detected-input,
+        .light-theme .detected-select {
+            background: #ffffff;
+            box-shadow: inset 2px 2px 5px #d9d9d9, inset -2px -2px 5px #ffffff;
+            color: #333333;
+        }
+
+        .dark-theme .pattern-value,
+        .dark-theme .detected-input,
+        .dark-theme .detected-select {
+            background: #000000;
+            box-shadow: inset 2px 2px 5px #1c1c1c, inset -2px -2px 5px #0a0a0a;
+            color: #e0e0e0;
+        }
+
+        .pattern-value:focus,
+        .detected-input:focus,
+        .detected-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.4);
+        }
+
+        .detected-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .detected-item {
+            display: flex;
+            flex-direction: column;
+        }
+
         .controls-section {
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .controls-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
         .control-group {
@@ -243,78 +361,142 @@
         }
 
         .control-label {
-            margin-bottom: 5px;
-            color: #b0b0b0;
+            margin-bottom: 6px;
             font-size: 0.8rem;
             font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .light-theme .control-label {
+            color: #666666;
+        }
+
+        .dark-theme .control-label {
+            color: #b0b0b0;
         }
 
         .control-input, .control-select {
             padding: 8px;
-            border: 1px solid #404040;
+            border: none;
             border-radius: 6px;
-            background: #0f0f0f;
-            color: #e0e0e0;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
+            font-size: 1rem;
+            transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
         }
 
-        .control-input:focus, .control-select:focus {
+        .light-theme .control-input,
+        .light-theme .control-select {
+            background: #ffffff;
+            box-shadow: inset 2px 2px 5px #d9d9d9, inset -2px -2px 5px #ffffff;
+            color: #333333;
+        }
+
+        .dark-theme .control-input,
+        .dark-theme .control-select {
+            background: #000000;
+            box-shadow: inset 2px 2px 5px #1c1c1c, inset -2px -2px 5px #0a0a0a;
+            color: #e0e0e0;
+        }
+
+        .control-input:focus,
+        .control-select:focus {
             outline: none;
-            border-color: #4a9eff;
-            box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
+            box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.4);
         }
 
         .generate-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #4a9eff, #0066cc);
-            color: white;
             border: none;
             border-radius: 8px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .light-theme .generate-btn {
+            background: linear-gradient(135deg, #0054b4, #007bff);
+            color: white;
+            box-shadow: 4px 4px 8px #d9d9d9, -4px -4px 8px #ffffff;
+        }
+
+        .dark-theme .generate-btn {
+            background: linear-gradient(135deg, #4a9eff, #0066cc);
+            color: white;
+            box-shadow: 4px 4px 8px #1c1c1c, -4px -4px 8px #0a0a0a;
         }
 
         .generate-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 158, 255, 0.4);
         }
 
         .output-section {
-            background: #0f0f0f;
-            border: 1px solid #404040;
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 15px;
-            height: fit-content;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .light-theme .output-section {
+            background: #ffffff;
+            box-shadow: inset 4px 4px 8px #d9d9d9, inset -4px -4px 8px #ffffff;
+        }
+
+        .dark-theme .output-section {
+            background: #000000;
+            box-shadow: inset 4px 4px 8px #1c1c1c, inset -4px -4px 8px #0a0a0a;
         }
 
         .output-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             padding-bottom: 8px;
-            border-bottom: 1px solid #404040;
+            border-bottom: 1px solid transparent;
+        }
+
+        .light-theme .output-header {
+            border-bottom-color: #d9d9d9;
+        }
+
+        .dark-theme .output-header {
+            border-bottom-color: #404040;
         }
 
         .output-title {
-            color: #4a9eff;
             font-size: 1rem;
             font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .light-theme .output-title {
+            color: #0054b4;
+        }
+
+        .dark-theme .output-title {
+            color: #4a9eff;
         }
 
         .copy-btn {
-            background: rgba(74, 158, 255, 0.1);
-            border: 1px solid #4a9eff;
-            color: #4a9eff;
             padding: 6px 12px;
+            border: none;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        .light-theme .copy-btn {
+            background: #ffffff;
+            box-shadow: 2px 2px 5px #d9d9d9, -2px -2px 5px #ffffff;
+            color: #0054b4;
+        }
+
+        .dark-theme .copy-btn {
+            background: #000000;
+            box-shadow: 2px 2px 5px #1c1c1c, -2px -2px 5px #0a0a0a;
+            color: #4a9eff;
         }
 
         .copy-btn:hover {
@@ -323,127 +505,174 @@
         }
 
         .output-content {
-            background: #1a1a1a;
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 12px;
-            max-height: 400px;
+            max-height: 350px;
             overflow-y: auto;
             font-family: 'Courier New', monospace;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             line-height: 1.4;
             white-space: pre-line;
+            transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        .light-theme .output-content {
+            background: #ffffff;
+            box-shadow: inset 2px 2px 5px #d9d9d9, inset -2px -2px 5px #ffffff;
+            color: #333333;
+        }
+
+        .dark-theme .output-content {
+            background: #000000;
+            box-shadow: inset 2px 2px 5px #1c1c1c, inset -2px -2px 5px #0a0a0a;
+            color: #e0e0e0;
         }
 
         .card-item {
-            padding: 5px;
-            margin-bottom: 5px;
-            border-radius: 4px;
+            padding: 6px;
+            margin-bottom: 6px;
+            border-radius: 6px;
             cursor: pointer;
             transition: background 0.3s ease;
         }
 
-        .card-item:hover {
+        .light-theme .card-item:hover {
+            background: rgba(0, 84, 180, 0.1);
+        }
+
+        .dark-theme .card-item:hover {
             background: rgba(74, 158, 255, 0.2);
         }
 
         .empty-state {
             text-align: center;
-            color: #808080;
             font-style: italic;
-            padding: 30px;
+            padding: 20px;
+            transition: color 0.3s ease;
         }
 
-        /* Scrollbar personalizado */
+        .light-theme .empty-state {
+            color: #999999;
+        }
+
+        .dark-theme .empty-state {
+            color: #808080;
+        }
+
         .output-content::-webkit-scrollbar {
             width: 6px;
         }
 
-        .output-content::-webkit-scrollbar-track {
+        .light-theme .output-content::-webkit-scrollbar-track {
+            background: #d9d9d9;
+            border-radius: 3px;
+        }
+
+        .dark-theme .output-content::-webkit-scrollbar-track {
             background: #404040;
             border-radius: 3px;
         }
 
-        .output-content::-webkit-scrollbar-thumb {
+        .light-theme .output-content::-webkit-scrollbar-thumb {
+            background: #0054b4;
+            border-radius: 3px;
+        }
+
+        .dark-theme .output-content::-webkit-scrollbar-thumb {
             background: #4a9eff;
             border-radius: 3px;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .container {
-                padding: 15px;
+                padding: 20px;
                 margin: 10px;
             }
-            
+
             .main-grid {
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
-            
+
             .controls-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
             }
-            
+
             .detected-controls {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
             }
-            
+
             .output-content {
-                max-height: 250px;
-                font-size: 0.75rem;
+                max-height: 300px;
+                font-size: 0.85rem;
+            }
+
+            .title {
+                font-size: 1.8rem;
+            }
+
+            .input-main, .pattern-value, .detected-input, .detected-select, .control-input, .control-select {
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin: 5px;
+            }
+
+            .header {
+                margin-bottom: 15px;
             }
 
             .title {
                 font-size: 1.5rem;
             }
 
-            .input-main {
-                min-height: 100px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 10px;
-                margin: 5px;
-            }
-
-            .header {
-                margin-bottom: 20px;
-            }
-
-            .title {
-                font-size: 1.3rem;
-            }
-
             .controls-grid {
                 grid-template-columns: 1fr;
             }
 
             .detected-controls {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(3, 1fr);
             }
 
             .output-content {
-                max-height: 200px;
+                max-height: 250px;
+                font-size: 0.8rem;
+            }
+
+            .input-main, .pattern-value, .detected-input, .detected-select, .control-input, .control-select {
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
-<body>
+<body class="dark-theme">
     <div class="container">
-        <!-- Header -->
         <div class="header">
-            <h1 class="title">🎯 NAMSO F6 CC-GEN PRO</h1>
-            <p class="subtitle">Generador avanzado de tarjetas con fines educativos. El uso que le den a esta herramiento no es responsabilidad del autor.</p>
+            <div class="header-top">
+                <h1 class="title">🎯 NAMSO F6 CC-GEN PRO</h1>
+                <div class="theme-toggle">
+                    <input type="checkbox" id="themeSwitch">
+                    <label for="themeSwitch" class="theme-label">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <p class="subtitle">Generador avanzado de tarjetas con fines educativos. El uso que le den a esta herramienta no es responsabilidad del autor.</p>
         </div>
 
-        <!-- Grid Principal -->
         <div class="main-grid">
-            <!-- Columna Izquierda -->
             <div class="left-column">
-                <!-- Información Detectada -->
+                <div class="input-section">
+                    <label class="input-label">📋 Ingresa tu tarjeta base:</label>
+                    <input type="text" id="mainInput" class="input-main" placeholder="Ejemplo: 4532015112830366|12|2027|456">
+                </div>
                 <div id="detectedInfo" class="detected-info">
                     <div class="detected-title">🔍 Información Editable</div>
                     <div class="detected-content">
@@ -451,27 +680,42 @@
                             <div class="pattern-label">Patrón de Tarjeta</div>
                             <input type="text" id="detectedPattern" class="pattern-value" placeholder="Patrón aparecerá aquí">
                         </div>
-                        
                         <div class="detected-controls">
                             <div class="detected-item">
-                                <div class="detected-label">Cantidad de X</div>
-                                <div class="x-count-control">
-                                    <button class="x-count-btn" onclick="changeXCount(-1)">-</button>
-                                    <input type="number" id="xCount" class="x-count-input" value="4" min="1" max="12">
-                                    <button class="x-count-btn" onclick="changeXCount(1)">+</button>
-                                </div>
-                            </div>
-                            
-                            <div class="detected-item">
                                 <div class="detected-label">Mes</div>
-                                <input type="text" id="detectedMonth" class="detected-input" placeholder="MM" maxlength="2">
+                                <select id="detectedMonth" class="detected-select">
+                                    <option value="">MM</option>
+                                    <option value="01">01</option>
+                                    <option value="02">02</option>
+                                    <option value="03">03</option>
+                                    <option value="04">04</option>
+                                    <option value="05">05</option>
+                                    <option value="06">06</option>
+                                    <option value="07">07</option>
+                                    <option value="08">08</option>
+                                    <option value="09">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
                             </div>
-                            
                             <div class="detected-item">
                                 <div class="detected-label">Año</div>
-                                <input type="text" id="detectedYear" class="detected-input" placeholder="YYYY" maxlength="4">
+                                <select id="detectedYear" class="detected-select">
+                                    <option value="">YYYY</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                    <option value="2029">2029</option>
+                                    <option value="2030">2030</option>
+                                    <option value="2031">2031</option>
+                                    <option value="2032">2032</option>
+                                    <option value="2033">2033</option>
+                                    <option value="2034">2034</option>
+                                    <option value="2035">2035</option>
+                                </select>
                             </div>
-                            
                             <div class="detected-item">
                                 <div class="detected-label">CCV</div>
                                 <input type="text" id="detectedCCV" class="detected-input" placeholder="XXX" maxlength="4">
@@ -479,311 +723,130 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Entrada -->
-                <div class="input-section">
-                    <label class="input-label">📋 Ingresa tu tarjeta base:</label>
-                    <textarea 
-                        id="mainInput" 
-                        class="input-main" 
-                        placeholder="Ejemplos:
-5555555555554444
-4532015112830366|12|2027|456
-5178058703645161|06|2025|632"
-                        rows="3"
-                    ></textarea>
+                <div class="controls-section">
+                    <div class="controls-grid">
+                        <div class="control-group">
+                            <label class="control-label">Cantidad</label>
+                            <input type="number" id="quantity" class="control-input" value="10" min="1" max="100">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Formato</label>
+                            <select id="format" class="control-select">
+                                <option value="pipe">Pipe (|)</option>
+                                <option value="space">Espacios</option>
+                                <option value="checker">Checker</option>
+                                <option value="json">JSON</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="generate-btn" onclick="generateCards()">🚀 Generar Tarjetas</button>
                 </div>
             </div>
-
-            <!-- Columna Derecha -->
             <div class="right-column">
-                <!-- Salida -->
                 <div class="output-section">
                     <div class="output-header">
                         <div class="output-title">📋 Tarjetas Generadas</div>
-                        <button class="copy-btn" onclick="copyAll()" id="copyBtn">
-                            📋 Copiar Todo
-                        </button>
+                        <button class="copy-btn" onclick="copyAll()" id="copyBtn">📋 Copiar Todo</button>
                     </div>
-                    
                     <div class="output-content" id="outputContent">
-                        <div class="empty-state">
-                            Las tarjetas generadas aparecerán aquí
-                        </div>
+                        <div class="empty-state">Las tarjetas generadas aparecerán aquí</div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Controles -->
-        <div class="controls-section">
-            <div class="controls-grid">
-                <div class="control-group">
-                    <label class="control-label">Cantidad</label>
-                    <input type="number" id="quantity" class="control-input" value="10" min="1" max="100">
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Formato</label>
-                    <select id="format" class="control-select">
-                        <option value="pipe">Pipe (|)</option>
-                        <option value="space">Espacios</option>
-                        <option value="checker">Checker</option>
-                        <option value="json">JSON</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Botón -->
-            <button class="generate-btn" onclick="generateCards()">
-                🚀 Generar Tarjetas
-            </button>
         </div>
     </div>
 
     <script>
-        /***************************************************
-         * VARIABLES GLOBALES
-         ***************************************************/
         let generatedData = [];
         let detectedPattern = null;
 
-        /***************************************************
-         * FUNCIONES DE UTILIDAD
-         ***************************************************/
-        /**
-         * Algoritmo de Luhn para calcular el dígito de chequeo
-         * @param {string} partialNumber - Número parcial de la tarjeta
-         * @returns {number} - Dígito de chequeo calculado
-         */
         function generateLuhnDigit(partialNumber) {
             let sum = 0;
             let isEven = true;
-            
             for (let i = partialNumber.length - 1; i >= 0; i--) {
                 let digit = parseInt(partialNumber[i]);
-                
                 if (isEven) {
                     digit *= 2;
-                    if (digit > 9) {
-                        digit -= 9;
-                    }
+                    if (digit > 9) digit -= 9;
                 }
-                
                 sum += digit;
                 isEven = !isEven;
             }
-            
             return (10 - (sum % 10)) % 10;
         }
 
-        /**
-         * Procesa un patrón de tarjeta con 'x' aplicando el algoritmo de Luhn
-         * @param {string} cardPattern - Patrón de la tarjeta con 'x'
-         * @returns {string} - Número de tarjeta procesado
-         */
         function processCardWithX(cardPattern) {
             let processedCard = '';
             let xPositions = [];
-            
             for (let i = 0; i < cardPattern.length; i++) {
                 if (cardPattern[i].toLowerCase() === 'x') {
                     xPositions.push(i);
-                    processedCard += '0'; // Temporal
+                    processedCard += '0';
                 } else {
                     processedCard += cardPattern[i];
                 }
             }
-            
             if (xPositions.length > 0) {
                 for (let i = 0; i < xPositions.length - 1; i++) {
                     const pos = xPositions[i];
                     const randomDigit = Math.floor(Math.random() * 10);
                     processedCard = processedCard.substring(0, pos) + randomDigit + processedCard.substring(pos + 1);
                 }
-                
                 const lastXPos = xPositions[xPositions.length - 1];
                 const partialNumber = processedCard.substring(0, lastXPos);
                 const checkDigit = generateLuhnDigit(partialNumber);
                 processedCard = processedCard.substring(0, lastXPos) + checkDigit + processedCard.substring(lastXPos + 1);
             }
-            
             return processedCard;
         }
 
-        /**
-         * Convierte un número de tarjeta a un patrón con 'x'
-         * @param {string} cardNumber - Número de tarjeta completo
-         * @param {number} xCount - Cantidad de 'x' a agregar
-         * @returns {string} - Patrón con 'x'
-         */
-        function convertToPattern(cardNumber, xCount = 4) {
+        function convertToPattern(cardNumber) {
             const cleanNumber = cardNumber.replace(/\D/g, '');
-            if (cleanNumber.length < 13) return cardNumber;
-            
-            const keepLength = Math.max(6, cleanNumber.length - xCount);
+            if (cleanNumber.length < 13) return cleanNumber;
+            const keepLength = cleanNumber.length - 4;
             const basePattern = cleanNumber.substring(0, keepLength);
-            const xPattern = 'x'.repeat(Math.min(xCount, cleanNumber.length - 6));
-            
+            const xPattern = 'xxxx';
             return basePattern + xPattern;
         }
 
-        /***************************************************
-         * FUNCIONES DE DETECCIÓN Y ACTUALIZACIÓN
-         ***************************************************/
-        /**
-         * Detecta el patrón de la tarjeta desde la entrada
-         * @param {string} input - Texto de entrada con la tarjeta
-         * @returns {Object|null} - Objeto con la información detectada o null si no se detecta
-         */
         function detectPattern(input) {
-            const lines = input.trim().split('\n').filter(line => line.trim());
-            if (lines.length === 0) return null;
+            const inputValue = input.trim();
+            if (!inputValue) return null;
 
-            const firstLine = lines[0].trim();
-            
-            if (firstLine.includes('|')) {
-                const parts = firstLine.split('|');
-                const originalCard = parts[0].replace(/\D/g, '');
-                const xCount = parseInt(document.getElementById('xCount').value) || 4;
-                const pattern = convertToPattern(originalCard, xCount);
-                
-                return {
-                    type: 'pipe',
-                    originalPattern: pattern,
-                    cardNumber: originalCard,
-                    month: parts[1] || null,
-                    year: parts.length > 2 ? parts[2] : null,
-                    ccv: parts.length > 3 ? parts[3] : null,
-                    hasDate: parts.length > 1,
-                    hasCCV: parts.length > 3
-                };
-            }
-            
-            const cleanNumber = firstLine.replace(/\D/g, '').replace(/x/gi, '0');
-            if (cleanNumber.length >= 13) {
-                let pattern = firstLine;
-                if (!firstLine.toLowerCase().includes('x')) {
-                    const xCount = parseInt(document.getElementById('xCount').value) || 4;
-                    pattern = convertToPattern(firstLine, xCount);
-                }
-                
-                return {
-                    type: 'number',
-                    originalPattern: pattern,
-                    cardNumber: cleanNumber,
-                    month: null,
-                    year: null,
-                    ccv: null,
-                    hasDate: false,
-                    hasCCV: false
-                };
-            }
-            
-            return null;
+            const parts = inputValue.split('|');
+            const originalCard = parts[0].replace(/\D/g, '');
+            if (originalCard.length < 13 || originalCard.length > 16) return null;
+
+            const pattern = convertToPattern(originalCard);
+
+            return {
+                type: parts.length > 1 ? 'pipe' : 'number',
+                originalPattern: pattern,
+                cardNumber: originalCard,
+                month: parts[1] || '',
+                year: parts.length > 2 ? parts[2] : '',
+                ccv: parts.length > 3 ? parts[3] : '',
+                hasDate: parts.length > 1,
+                hasCCV: parts.length > 3
+            };
         }
 
-        /**
-         * Cambia la cantidad de 'x' en el patrón
-         * @param {number} delta - Cambio en la cantidad de 'x'
-         */
-        function changeXCount(delta) {
-            const xCountInput = document.getElementById('xCount');
-            let currentValue = parseInt(xCountInput.value) || 4;
-            currentValue = Math.max(1, Math.min(10, currentValue + delta));
-            xCountInput.value = currentValue;
-            updatePatternFromInput();
-        }
-
-        /**
-         * Actualiza el patrón detectado desde el input
-         */
         function updatePatternFromInput() {
             const input = document.getElementById('mainInput').value;
             if (input.trim()) {
                 detectedPattern = detectPattern(input);
                 showDetectedInfo(detectedPattern);
-            }
-        }
-
-        /***************************************************
-         * FUNCIONES DE GENERACIÓN Y FORMATEO
-         ***************************************************/
-        /**
-         * Genera una tarjeta a partir del patrón detectado
-         * @param {Object} pattern - Patrón detectado
-         * @returns {Object} - Tarjeta generada con número, mes, año y CCV
-         */
-        function generateCardFromPattern(pattern) {
-            const editedPattern = document.getElementById('detectedPattern').value;
-            let cardNumber = processCardWithX(editedPattern);
-            let month = document.getElementById('detectedMonth').value;
-            let year = document.getElementById('detectedYear').value;
-            
-            if (!month || month.length !== 2) {
-                month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
-            }
-            if (!year || year.length !== 4) {
-                year = String(2025 + Math.floor(Math.random() * 5));
-            }
-            
-            let ccv;
-            const customCCV = document.getElementById('detectedCCV').value;
-            if (customCCV && customCCV.length >= 3) {
-                const baseCCV = parseInt(customCCV);
-                const variation = Math.floor(Math.random() * 100) - 50;
-                ccv = String(Math.max(100, Math.min(999, baseCCV + variation))).padStart(3, '0');
             } else {
-                ccv = String(Math.floor(Math.random() * 900) + 100);
-            }
-            
-            return {
-                number: cardNumber,
-                month: month,
-                year: year,
-                ccv: ccv
-            };
-        }
-
-        /**
-         * Formatea la salida de una tarjeta según el formato seleccionado
-         * @param {Object} card - Tarjeta generada
-         * @param {string} format - Formato seleccionado
-         * @returns {string} - Tarjeta formateada
-         */
-        function formatOutput(card, format) {
-            switch (format) {
-                case 'pipe':
-                    return `${card.number}|${card.month}|${card.year}|${card.ccv}`;
-                case 'space':
-                    const formattedNumber = card.number.replace(/(\d{4})(?=\d)/g, '$1 ');
-                    return `${formattedNumber} ${card.month}/${card.year.slice(-2)} ${card.ccv}`;
-                case 'checker':
-                    return `${card.number}|${card.month}/${card.year.slice(-2)}|${card.ccv}`;
-                case 'json':
-                    return JSON.stringify({
-                        number: card.number,
-                        expiry: `${card.month}/${card.year.slice(-2)}`,
-                        ccv: card.ccv
-                    });
-                default:
-                    return `${card.number}|${card.month}|${card.year}|${card.ccv}`;
+                document.getElementById('detectedInfo').style.display = 'none';
             }
         }
 
-        /***************************************************
-         * FUNCIONES DE INTERFAZ
-         ***************************************************/
-        /**
-         * Muestra la información detectada en los campos editables
-         * @param {Object|null} pattern - Patrón detectado
-         */
         function showDetectedInfo(pattern) {
             const detectedInfo = document.getElementById('detectedInfo');
             if (!pattern) {
                 detectedInfo.style.display = 'none';
                 return;
             }
-            
             document.getElementById('detectedPattern').value = pattern.originalPattern || '';
             document.getElementById('detectedMonth').value = pattern.month || '';
             document.getElementById('detectedYear').value = pattern.year || '';
@@ -791,47 +854,78 @@
             detectedInfo.style.display = 'block';
         }
 
-        /**
-         * Genera las tarjetas basándose en los datos de entrada
-         */
+        function generateCardFromPattern(pattern) {
+            const editedPattern = document.getElementById('detectedPattern').value;
+            let cardNumber = processCardWithX(editedPattern);
+            let month = document.getElementById('detectedMonth').value;
+            let year = document.getElementById('detectedYear').value;
+            if (!month) {
+                month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+            }
+            if (!year) {
+                year = String(2025 + Math.floor(Math.random() * 11));
+            }
+            let ccv;
+            const customCCV = document.getElementById('detectedCCV').value;
+            if (customCCV && customCCV.length >= 3) {
+                const baseCCV = parseInt(customCCV);
+                const variation = Math.floor(Math.random() * 100) - 50;
+                ccv = String(Math.max(100, Math.min(999, baseCCV + variation))).padStart(3, '0');
+            } else {
+                ccv = String(Math.floor(Math.random() * 900) + 100).padStart(3, '0');
+            }
+            return { number: cardNumber, month: month, year: year, ccv: ccv };
+        }
+
+        function formatOutput(card, format) {
+            switch (format) {
+                case 'pipe': return `${card.number}|${card.month}|${card.year}|${card.ccv}`;
+                case 'space':
+                    const formattedNumber = card.number.replace(/(\d{4})(?=\d)/g, '$1 ');
+                    return `${formattedNumber} ${card.month}/${card.year.slice(-2)} ${card.ccv}`;
+                case 'checker': return `${card.number}|${card.month}/${card.year.slice(-2)}|${card.ccv}`;
+                case 'json':
+                    return JSON.stringify({
+                        number: card.number,
+                        expiry: `${card.month}/${card.year.slice(-2)}`,
+                        ccv: card.ccv
+                    });
+                default: return `${card.number}|${card.month}|${card.year}|${card.ccv}`;
+            }
+        }
+
         function generateCards() {
             const input = document.getElementById('mainInput').value;
-            const quantity = parseInt(document.getElementById('quantity').value);
+            const quantity = parseInt(document.getElementById('quantity').value) || 10;
             const format = document.getElementById('format').value;
-            
+
             if (!input.trim()) {
-                alert('Por favor ingresa una tarjeta');
+                alert('Por favor ingresa una tarjeta base válida');
                 return;
             }
-            
+
             const pattern = detectPattern(input);
             if (!pattern) {
-                alert('No se pudo detectar un patrón válido');
+                alert('El formato de la tarjeta no es válido. Usa un número de 13-16 dígitos, opcionalmente seguido de |MM|YYYY|CCV');
                 return;
             }
-            
+
             generatedData = [];
             for (let i = 0; i < quantity; i++) {
                 const card = generateCardFromPattern(pattern);
                 const formatted = formatOutput(card, format);
                 generatedData.push(formatted);
             }
-            
             displayResults();
         }
 
-        /**
-         * Muestra los resultados generados en el área de salida
-         */
         function displayResults() {
             const outputContent = document.getElementById('outputContent');
             outputContent.innerHTML = '';
-            
             if (generatedData.length === 0) {
                 outputContent.innerHTML = '<div class="empty-state">No hay tarjetas generadas</div>';
                 return;
             }
-            
             generatedData.forEach(card => {
                 const cardItem = document.createElement('div');
                 cardItem.className = 'card-item';
@@ -841,16 +935,12 @@
             });
         }
 
-        /**
-         * Copia una sola tarjeta al portapapeles al hacer clic
-         * @param {string} cardText - Texto de la tarjeta a copiar
-         */
         function copySingleCard(cardText) {
-            navigator.clipboard.writeText(cardText).then(() => {
+            navigator.clipboard.writeText(cardText.trim()).then(() => {
                 const outputContent = document.getElementById('outputContent');
                 const cardItems = outputContent.getElementsByClassName('card-item');
                 for (let item of cardItems) {
-                    if (item.textContent === cardText) {
+                    if (item.textContent.trim() === cardText.trim()) {
                         const originalBg = item.style.background;
                         item.style.background = 'rgba(34, 197, 94, 0.2)';
                         item.textContent = '✅ ' + item.textContent;
@@ -866,66 +956,29 @@
             });
         }
 
-        /**
-         * Copia todas las tarjetas generadas al portapapeles
-         */
         function copyAll() {
             if (generatedData.length === 0) {
-                alert('No hay datos para copiar');
+                alert('No hay tarjetas para copiar');
                 return;
             }
-            
             const text = generatedData.join('\n');
             navigator.clipboard.writeText(text).then(() => {
                 const btn = document.getElementById('copyBtn');
                 const originalText = btn.textContent;
                 btn.textContent = '✅ Copiado';
                 btn.style.background = 'rgba(34, 197, 94, 0.2)';
-                btn.style.borderColor = '#22c55e';
                 btn.style.color = '#22c55e';
                 setTimeout(() => {
                     btn.textContent = originalText;
                     btn.style.background = '';
-                    btn.style.borderColor = '';
                     btn.style.color = '';
-                }, 2000);
+                }, 1500);
+            }, () => {
+                alert('Error al copiar todas las tarjetas');
             });
         }
 
-        /***************************************************
-         * EVENT LISTENERS Y VALIDACIONES
-         ***************************************************/
-        document.getElementById('mainInput').addEventListener('input', function(e) {
-            updatePatternFromInput();
-        });
-
-        document.getElementById('xCount').addEventListener('change', function(e) {
-            updatePatternFromInput();
-        });
-
-        document.getElementById('detectedMonth').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 2) value = value.substring(0, 2);
-            if (value.length > 0) {
-                const month = parseInt(value);
-                if (month < 1) value = '01';
-                if (month > 12) value = '12';
-                if (value.length === 1 && month > 1) value = '0' + value;
-            }
-            e.target.value = value;
-        });
-
-        document.getElementById('detectedYear').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 4) value = value.substring(0, 4);
-            if (value.length === 4) {
-                const year = parseInt(value);
-                if (year < 2024) value = '2024';
-                if (year > 2035) value = '2035';
-            }
-            e.target.value = value;
-        });
-
+        document.getElementById('mainInput').addEventListener('input', updatePatternFromInput);
         document.getElementById('detectedCCV').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
             if (value.length > 4) value = value.substring(0, 4);
@@ -938,15 +991,23 @@
             e.target.value = value;
         });
 
-        /***************************************************
-         * INICIALIZACIÓN
-         ***************************************************/
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.classList.contains('dark-theme');
+            body.classList.toggle('dark-theme', !isDark);
+            body.classList.toggle('light-theme', isDark);
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        }
+
+        document.getElementById('themeSwitch').addEventListener('change', toggleTheme);
+
         window.onload = function() {
-            document.getElementById('mainInput').value = '5178058703645161|06|2025|632';
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.className = savedTheme + '-theme';
+            document.getElementById('themeSwitch').checked = savedTheme === 'light';
+            document.getElementById('mainInput').value = '5178058055555555|06|2025|632';
             updatePatternFromInput();
         };
     </script>
 </body>
 </html>
-
-
